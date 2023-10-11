@@ -23,15 +23,12 @@ $$y({x,w})=\sum_{i=0}^mw_ix^i$$
 ### 4.1 最小二乘法 
 #### 4.1.1理论
 最小二乘法的代价函数为：
-
-$E（w） = {\frac{1}{2}}\sum _{n=1}^N{(y(X,w)-t_n)}^2$
+$$E（w） = {\frac{1}{2}}\sum _{n=1}^N{(y(X,w)-t_n)}^2$$
 求偏导得 
 $${\frac{\partial E}{\partial w}}=X'Xw-X'T$$
 
-令 
-${\frac{\partial E}{\partial w}}=0$
-可得 
-$w= (X^TX)^{-1}X^TT$
+令 ${\frac{\partial E}{\partial w}}=0$ 
+可得 $w= (X^TX)^{-1}X^TT$
 加入惩罚项（L2范数）时，代价函数为：
 
 $$E（w） = {\frac{1}{2}}\sum _{n=1}^N{(y(X,w)-t_n)}^2+{\frac{\lambda}{2}||w||^2}$$
