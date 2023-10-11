@@ -117,7 +117,7 @@ def get_ERMS(W, X, T):  # 计算损失函数
 ### 5.1 最小二乘法
 #### 5.1.1 拟合结果
 ##### 5.1.1.1 不包含正则项
-![Alt text](https://github.com/JonStarkkk/machine_learning/blob/main/polynomial_fitting/images/least_square/image.png)
+![Alt text](https://github.com/JonStarkkk/machine_learning/raw/main/polynomial_fitting/images/least_square/image.png)
 #### 5.1.1 求解最优解
 
 #### 5.2 过拟合
