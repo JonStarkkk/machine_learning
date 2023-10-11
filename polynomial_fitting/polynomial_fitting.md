@@ -17,70 +17,51 @@
 - X86-64
 
 ## 四．理论支撑
-由高数中的泰勒级数可知，足够高阶的多项式可以拟合任意函数。因此，我们可以用多项式来拟合正弦函数 $sin(2πx)$ 。在m阶多项式中，有m+1个待定系数。m+1个系数（由低阶到高阶）记为 $w_i$ ,组成的（列）向量记作 $w$ 。拟合函数可表示为：
-$$y({x,w})=\sum_{i=0}^mw_ix^i$$
+由高数中的泰勒级数可知，足够高阶的多项式可以拟合任意函数。因此，我们可以用多项式来拟合正弦函数 $sin(2πx)$ 。在m阶多项式中，有m+1个待定系数。m+1个系数（由低阶到高阶）记为 $w_i$ ,组成的（列）向量记作 $w$ 。拟合函数可表示为： $$y({x,w})=\sum_{i=0}^mw_ix^i$$
 
 ### 4.1 最小二乘法 
 #### 4.1.1理论
-最小二乘法的代价函数为：
-$$E（w） = {\frac{1}{2}}\sum _{n=1}^N{(y(X,w)-t_n)}^2$$
-$\left[ \frac{a}{b} \right]$
-$\left\{ \\right\}$
+最小二乘法的代价函数为： $$E(w) = {\frac{1}{2}}\sum _{n=1}^N{(y(X,w)-t_n)}^2$$
+求偏导得 $${\frac{\partial E}{\partial w}} = X'Xw-X'T$$
+令 ${\frac{\partial E}{\partial w}} = 0$ 可得 $$w = (X^TX)^{-1}X^TT$$
 
+加入惩罚项（L2范数）时，代价函数为： $$E（w） = {\frac{1}{2}}\sum _{n=1}^N{(y(X,w)-t_n)}^2+{\frac{\lambda}{2}||w||^2}$$
+同理，令偏导 ${\frac{\partial E}{\partial w}}=0$ 得 $$w= (X^TX+\lambda)^{-1}X^TT$$
+其中
 
-求偏导得 
-$${\frac{\partial E}{\partial w}}=X'Xw-X'T$$
-
-令 ${\frac{\partial E}{\partial w}}=0$ 
-可得 $w= (X^TX)^{-1}X^TT$
-加入惩罚项（L2范数）时，代价函数为：
-
-$$E（w） = {\frac{1}{2}}\sum _{n=1}^N{(y(X,w)-t_n)}^2+{\frac{\lambda}{2}||w||^2}$$
-同理，令偏导 
-${\frac{\partial E}{\partial w}}=0$
-得 
-$w= (X^TX+\lambda)^{-1}X^TT$
-其中 
-$X=
-\left[
-\begin{matrix}
- 1      & x_1      & \cdots & x_1^m      \\
- 1      & x_2      & \cdots & x_2^m      \\
- \vdots & \vdots & \ddots & \vdots \\
- 1      & x_N      & \cdots & x_N^m      \\
-\end{matrix}
-\right],
-w=\left[
-\begin{matrix}
-w_1     \\
-w_2      \\
-\vdots \\
-w_m    \\
-\end{matrix}
-\right],
-T=\left[
-\begin{matrix}
-t_1     \\
-t_2      \\
-\vdots \\
-t_m    \\
-\end{matrix}
-\right]$
+$$X=
+\begin{bmatrix}
+1&x_1&\cdots&x_1^m\\
+1&x_2&\cdots&x_2^m\\
+\vdots&\vdots&\ddots&\vdots\\
+1&x_N&\cdots&x_N^m\\
+\end{bmatrix},
+w=
+\begin{bmatrix}
+w_1\\
+w_2\\
+\vdots\\
+w_m\\
+\end{bmatrix},
+T=
+\begin{bmatrix}
+t_1\\
+t_2\\
+\vdots\\
+t_m\\
+\end{bmatrix}
+$$
 #### 4.1.2核心算法
-首先编写函数get_matrix函数得到
-$X$
-矩阵
-```
+首先编写函数get_matrix函数得到 $X$ 矩阵
+```python
 def get_matrix(x, M):   #生成(sample_num,m)的参数矩阵
         X = pow(x, 0)
         for i in range(1, M + 1):
             X = np.column_stack((X, pow(x, i)))
         return X
 ```
-根据理论基础中
-$w$
-的计算公式编写least_square函数求出$w$
-```
+根据理论基础中 $w$ 的计算公式编写least_square函数求出 $w$
+```python
 def least_square(X, T, M):  # 最小二乘法求解向量
     W = np.linalg.inv(X.T @ X + np.identity(M + 1) * lam) @ X.T @ T  # lam=0时无惩罚项
     return W
@@ -90,30 +71,24 @@ def least_square(X, T, M):  # 最小二乘法求解向量
 ### 4.2 梯度下降法
 #### 4.2.1理论
 梯度下降法的基本思想可以类比为一个下山的过程。假设这样一个场景：一个人被困在山上，需要从山上下来(找到山的最低点，也就是山谷)。但此时山上的浓雾很大，导致可视度很低；因此，下山的路径就无法确定，必须利用自己周围的信息一步一步地找到下山的路。这个时候，便可利用梯度下降算法来帮助自己下山
-在最小二乘法中，我们已经得到偏导数
-${\frac{\partial E}{\partial w}}=X'Xw-X'T=X'(Xw-T)$
-定义学习率即步长
-$\alpha$
-,可以得到经过一次迭代后的
-$w'=w-\alpha X'(Xw-T)$
-,通过设置合适的
-$\alpha$
-，经过足够多的迭代次数后，我们能够得到一个在可接受误差内的优化解
-$w^*$
-，当然为了限制时间，我们也需要设置最大迭代次数
+
+在最小二乘法中，我们已经得到偏导数 ${\frac{\partial E}{\partial w}}=X'Xw-X'T=X'(Xw-T)$
+
+定义学习率即步长 $\alpha$ ,
+
+可以得到经过一次迭代后的 $w'=w-\alpha X'(Xw-T)$ ,
+
+通过设置合适的 $\alpha$ ，经过足够多的迭代次数后，我们能够得到一个在可接受误差内的优化解 $w^*$ ，当然为了限制时间，我们也需要设置最大迭代次数
 
 #### 4.2.2核心算法
-首先通过get_gradient函数计算当前
-$w$
-对应梯度。其中，可以通过计算残差
-$D=Xw-T$
+首先通过get_gradient函数计算当前 $w$ 对应梯度。其中，可以通过计算残差 $D=Xw-T$
 简化计算
 ```python
 def get_gradient(W, X, T):          # 定义梯度函数
     diff = X @ W - T			# 残差 diff
     return (1/sample_num) * (X.T @ diff)
 ```
-编写gradient_descent函数迭代获得新的$w$直到到达最大迭代次数或代价$ERMS$进入最大可接受误差内
+编写gradient_descent函数迭代获得新的 $w$ 直到到达最大迭代次数或代价 $ERMS$ 进入最大可接受误差内
 ```python
 def gradient_descent(X, T):
     start = time.time()
@@ -131,7 +106,7 @@ def gradient_descent(X, T):
     errorlist.append(ERMS)
     return W
 ```
-其中$ERMS$通过get_ERMS函数计算
+其中 $ERMS$ 通过get_ERMS函数计算
 ```python
 def get_ERMS(W, X, T):  # 计算损失函数
     diff = X @ W - T  # 残差 diff
