@@ -37,13 +37,14 @@ sample_num = 10
 funcName = sin
 noise_variance = 0.1  # 噪声的方差
 rank = 15  # 多项式拟合阶数
-lam = 0.00002  # 正则化系数
+lam = 0.0000  # 正则化系数
 
 # x, y为两个向量，对应的x[k],y[k]则是图像上的一个点
 x = np.linspace(X_range[0], X_range[1], num=1200)  # 真值弧线和拟合弧线
 y = sin(x)
 errorList = list()  # 记录不同阶数的错误率List
 _X, _Y = get_data(X_range, sample_num, funcName, noise_variance)
+
 for i in range(1, rank):
 # for i in range(m-1, m):
     X = get_matrix(_X, i)
