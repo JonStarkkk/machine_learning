@@ -56,7 +56,7 @@ for i in range(1, rank):
     plt.plot(x, value, "r-", x, y, _X, _Y, "co", markersize=2.)
     plt.legend(["$Result$", "$Y=sin(2𝝅X)$", "$DataSet$"])
     plt.title("sample_num=" + str(sample_num)+"\nrank=" + str(i))
-    plt.savefig(r"D:\\code\\python\\machine learning\\polynomial fitting\\result\\" + str(sample_num) + "_" + str(i) + ".png")
+    plt.savefig(r"D:\\code\\machine_learning\\polynomial_fitting\\result\\" + str(sample_num) + "_" + str(i) + ".png")
     plt.grid()
     plt.close()
 
